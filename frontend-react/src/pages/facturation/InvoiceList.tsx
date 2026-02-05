@@ -169,11 +169,22 @@ const InvoiceList: React.FC = () => {
                                         {activeTab === 'normalized' && (
                                             <td className="px-6 py-4 text-center">
                                                 {inv.dgi_reference ? (
-                                                    <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full bg-green-100 text-green-700" title={'Ref: ' + inv.dgi_reference}>
-                                                        <Check size={12} /> Déclaré
-                                                    </span>
+                                                    <div className="flex flex-col items-center gap-1">
+                                                        <span
+                                                            className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full bg-green-100 text-green-700 border border-green-200 cursor-help"
+                                                            title={`Référence DGI: ${inv.dgi_reference}\nDate: ${new Date(inv.dgi_synced_at).toLocaleString('fr-FR')}`}
+                                                        >
+                                                            <Check size={12} /> Déclaré DGI
+                                                        </span>
+                                                        <span className="text-[10px] text-slate-400 font-mono">
+                                                            {inv.dgi_reference.substring(0, 15)}...
+                                                        </span>
+                                                    </div>
                                                 ) : (
-                                                    <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full bg-slate-100 text-slate-500">
+                                                    <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
+                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                        </svg>
                                                         Non Déclaré
                                                     </span>
                                                 )}
