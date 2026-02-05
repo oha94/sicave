@@ -1,0 +1,64 @@
+# Laravel Backend
+backend-laravel/vendor/
+backend-laravel/node_modules/
+backend-laravel/.env
+backend-laravel/.env.backup
+backend-laravel/.phpunit.result.cache
+backend-laravel/Homestead.json
+backend-laravel/Homestead.yaml
+backend-laravel/npm-debug.log
+backend-laravel/yarn-error.log
+backend-laravel/storage/*.key
+backend-laravel/storage/app/*
+!backend-laravel/storage/app/.gitignore
+backend-laravel/storage/framework/cache/*
+!backend-laravel/storage/framework/cache/.gitignore
+backend-laravel/storage/framework/sessions/*
+!backend-laravel/storage/framework/sessions/.gitignore
+backend-laravel/storage/framework/testing/*
+!backend-laravel/storage/framework/testing/.gitignore
+backend-laravel/storage/framework/views/*
+!backend-laravel/storage/framework/views/.gitignore
+backend-laravel/storage/logs/*
+!backend-laravel/storage/logs/.gitignore
+backend-laravel/public/hot
+backend-laravel/public/storage
+backend-laravel/bootstrap/cache/*
+!backend-laravel/bootstrap/cache/.gitignore
+
+# React Frontend
+frontend-react/node_modules/
+frontend-react/dist/
+frontend-react/build/
+frontend-react/.env
+frontend-react/.env.local
+frontend-react/.env.development.local
+frontend-react/.env.test.local
+frontend-react/.env.production.local
+frontend-react/npm-debug.log*
+frontend-react/yarn-debug.log*
+frontend-react/yarn-error.log*
+frontend-react/.pnp
+frontend-react/.pnp.js
+frontend-react/coverage/
+frontend-react/.vite/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp

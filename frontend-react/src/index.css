@@ -1,0 +1,157 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@theme {
+  --color-primary: #004d4d;
+  --color-primary-light: #006666;
+  --color-accent-start: #a3e6d7;
+  /* Mint */
+  --color-accent-end: #87ceeb;
+  /* Sky Blue */
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+@layer base {
+  body {
+    @apply font-sans text-slate-800 antialiased;
+    background: radial-gradient(circle at 10% 20%, rgb(240, 245, 255) 0%, rgb(225, 238, 235) 90%);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/80 backdrop-blur-md border border-white/40 shadow-lg;
+  }
+
+  .glass-card {
+    @apply bg-white/60 backdrop-blur-sm border border-white/60 shadow-sm rounded-2xl;
+  }
+
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-light text-white font-medium py-3 px-6 rounded-xl transition-all shadow-md active:scale-95;
+  }
+
+  .input-glass {
+    @apply bg-white/50 border border-white/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-xl px-4 py-3 outline-none transition-all placeholder:text-slate-400 backdrop-blur-sm shadow-inner text-slate-800;
+  }
+
+  .input-field {
+    @apply w-full bg-white border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl px-4 py-2.5 outline-none transition-all placeholder:text-slate-400 text-slate-800;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-slate-700 mb-1.5;
+  }
+}
+
+@media print {
+  body {
+    visibility: hidden;
+    background: white;
+  }
+
+  /* Only show the element being printed */
+  .printable-content,
+  .printable-content-a4,
+  .printable-content *,
+  .printable-content-a4 * {
+    visibility: visible;
+  }
+
+  /* POS Ticket 80mm */
+  .printable-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm !important;
+    max-width: 80mm !important;
+    padding: 2mm;
+    font-size: 12px;
+    line-height: 1.2;
+    color: black !important;
+  }
+
+  /* Invoice A4 */
+  .printable-content-a4 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    padding: 10mm !important;
+    font-size: 12px;
+    /* Base size */
+    color: black !important;
+    background: white !important;
+  }
+
+  /* Common Reset */
+  .printable-content .glass-card,
+  .printable-content-a4 .glass-card,
+  .printable-content .bg-slate-50,
+  .printable-content-a4 .bg-slate-50,
+  .printable-content-a4 .bg-slate-100,
+  .printable-content-a4 .bg-slate-200 {
+    box-shadow: none !important;
+    background: white !important;
+    border-color: black !important;
+  }
+
+  /* Force Text Colors */
+  .printable-content *,
+  .printable-content-a4 * {
+    color: black !important;
+  }
+
+  /* Borders for A4 */
+  .printable-content-a4 .border {
+    border-color: black !important;
+  }
+
+  .printable-content-a4 .border-b {
+    border-bottom-color: black !important;
+  }
+
+  .printable-content-a4 .border-r {
+    border-right-color: black !important;
+  }
+
+  /* Hide scrollbars */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media print {
+  /* Hide sidebar, search, and payment form during print */
+  aside,
+  .w-1\/3,
+  /* Hide client list sidebar */
+  form,
+  /* Hide payment form */
+  .border-t,
+  /* Hide form container border */
+  button
+
+  /* Hide buttons */
+    {
+    display: none !important;
+  }
+
+  /* Make sure the main content takes full width */
+  .flex-1 {
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Reset colors for print */
+  .bg-white\/50,
+  .backdrop-blur-xl {
+    background: none !important;
+    backdrop-filter: none !important;
+  }
+}

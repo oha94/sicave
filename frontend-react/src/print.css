@@ -1,0 +1,30 @@
+@media print {
+    /* Hide sidebar, search, and payment form during print */
+    aside,
+    .w-1\/3,
+    /* Hide client list sidebar */
+    form,
+    /* Hide payment form */
+    .border-t,
+    /* Hide form container border */
+    button
+
+    /* Hide buttons */
+        {
+        display: none !important;
+    }
+
+    /* Make sure the main content takes full width */
+    .flex-1 {
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* Reset colors for print */
+    .bg-white\/50,
+    .backdrop-blur-xl {
+        background: none !important;
+        backdrop-filter: none !important;
+    }
+}
