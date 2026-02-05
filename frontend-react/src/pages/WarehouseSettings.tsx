@@ -44,10 +44,12 @@ const WarehouseSettings: React.FC = () => {
             } else {
                 await api.post('/warehouses', formData);
             }
+            setIsModalOpen(false);
             window.location.reload();
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            alert("Erreur lors de l'enregistrement");
+            const errorMessage = error.response?.data?.message || error.message || "Erreur lors de l'enregistrement";
+            alert(errorMessage);
         }
     };
 
@@ -133,7 +135,7 @@ const WarehouseSettings: React.FC = () => {
                                 />
                             </div>
                             <div className="pt-4 flex gap-3 justify-end">
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-xl text-slate-500 hover:bg-slate-100 font-medium">Authoriser</button>
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-xl text-slate-500 hover:bg-slate-100 font-medium">Annuler</button>
                                 <button type="submit" className="btn-primary">Enregistrer</button>
                             </div>
                         </form>
