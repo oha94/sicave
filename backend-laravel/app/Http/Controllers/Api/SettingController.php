@@ -102,4 +102,16 @@ class SettingController extends Controller
 
         return response()->json(['message' => 'Aucun fichier reçu'], 400);
     }
+
+    public function testDgiConnection()
+    {
+        $dgiService = new \App\Services\DgiService();
+        $result = $dgiService->testConnection();
+
+        if ($result['success']) {
+            return response()->json($result, 200);
+        } else {
+            return response()->json($result, 500);
+        }
+    }
 }

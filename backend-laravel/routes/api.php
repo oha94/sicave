@@ -73,6 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('settings/otp/generate', [\App\Http\Controllers\Api\SettingController::class, 'generateOtp']);
     Route::post('settings/otp/verify', [\App\Http\Controllers\Api\SettingController::class, 'verifyOtp']);
     Route::post('settings/logo', [\App\Http\Controllers\Api\SettingController::class, 'uploadLogo']);
+    Route::post('settings/test-dgi', [\App\Http\Controllers\Api\SettingController::class, 'testDgiConnection']);
 
     Route::apiResource('cash-counts', \App\Http\Controllers\Api\CashCountController::class);
 

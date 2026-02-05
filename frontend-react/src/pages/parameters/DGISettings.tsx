@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GlassCard } from '../../components/ui/GlassCard';
-import { Lock, ShieldCheck, Save, Eye, EyeOff, Server, AlertCircle, CheckCircle } from 'lucide-react';
+import { Lock, ShieldCheck, Save, Eye, EyeOff, Server, AlertCircle, CheckCircle, Wifi, WifiOff, Loader } from 'lucide-react';
 import api from '../../services/api';
 
 const DGISettings: React.FC = () => {
@@ -9,13 +9,17 @@ const DGISettings: React.FC = () => {
     const [inputCode, setInputCode] = useState('');
     const [error, setError] = useState('');
     const [saving, setSaving] = useState(false);
+    const [testing, setTesting] = useState(false);
+    const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
+    const [connectionMessage, setConnectionMessage] = useState('');
 
     const [settings, setSettings] = useState({
         dgi_environment: 'test',
-        dgi_base_url: 'https://api.dgi.ci/test',
+        dgi_base_url: 'https://www.services.fne.dgi.gouv.ci/ws',
         dgi_login: '',
         dgi_password: '',
-        dgi_api_token: '',
+        dgi_point_of_sale: 'POS-01',
+        dgi_commercial_message: 'Merci de votre visite',
     });
 
     const [showApiPassword, setShowApiPassword] = useState(false);
@@ -43,11 +47,11 @@ const DGISettings: React.FC = () => {
             const data = await api.getSettings();
             setSettings({
                 dgi_environment: data.dgi_environment || 'test',
-                dgi_base_url: data.dgi_base_url || 'https://api.dgi.ci/test',
-                dgi_ncc: data.dgi_ncc || '',
+                dgi_base_url: data.dgi_base_url || 'https://www.services.fne.dgi.gouv.ci/ws',
                 dgi_login: data.dgi_login || '',
                 dgi_password: data.dgi_password || '',
-                dgi_api_token: data.dgi_api_token || '',
+                dgi_point_of_sale: data.dgi_point_of_sale || 'POS-01',
+                dgi_commercial_message: data.dgi_commercial_message || 'Merci de votre visite',
             });
         } catch (err) {
             console.error("Failed to load settings");
@@ -64,12 +68,35 @@ const DGISettings: React.FC = () => {
         }
     };
 
+    const handleTestConnection = async () => {
+        setTesting(true);
+        setConnectionStatus('idle');
+        setConnectionMessage('');
+
+        try {
+            const result = await api.testDgiConnection();
+            if (result.success) {
+                setConnectionStatus('success');
+                setConnectionMessage(result.message);
+            } else {
+                setConnectionStatus('error');
+                setConnectionMessage(result.message);
+            }
+        } catch (err: any) {
+            setConnectionStatus('error');
+            setConnectionMessage(err.response?.data?.message || 'Erreur de connexion au serveur');
+        } finally {
+            setTesting(false);
+        }
+    };
+
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
         try {
             await api.updateSettings(settings);
             alert("Configuration DGI mise à jour avec succès.");
+            setConnectionStatus('idle'); // Reset connection status after save
         } catch (err) {
             alert("Erreur lors de la sauvegarde.");
         } finally {
@@ -147,6 +174,31 @@ const DGISettings: React.FC = () => {
                 </div>
             </div>
 
+            {/* Connection Status Banner */}
+            {connectionStatus !== 'idle' && (
+                <GlassCard className={`p-4 ${connectionStatus === 'success' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                    <div className="flex items-center gap-3">
+                        {connectionStatus === 'success' ? (
+                            <>
+                                <Wifi className="text-green-600" size={24} />
+                                <div>
+                                    <p className="font-bold text-green-800">Connexion réussie</p>
+                                    <p className="text-sm text-green-600">{connectionMessage}</p>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <WifiOff className="text-red-600" size={24} />
+                                <div>
+                                    <p className="font-bold text-red-800">Échec de connexion</p>
+                                    <p className="text-sm text-red-600">{connectionMessage}</p>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </GlassCard>
+            )}
+
             <GlassCard className="p-6">
                 <form onSubmit={handleSave} className="space-y-6">
 
@@ -190,7 +242,7 @@ const DGISettings: React.FC = () => {
                                     className="input-glass w-full pl-10"
                                     value={settings.dgi_base_url}
                                     onChange={(e) => setSettings({ ...settings, dgi_base_url: e.target.value })}
-                                    placeholder="ex: https://api.dgi.ci/v1"
+                                    placeholder="ex: https://www.services.fne.dgi.gouv.ci/ws"
                                 />
                             </div>
                         </div>
@@ -224,19 +276,50 @@ const DGISettings: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="col-span-2">
-                            <label className="label">Token API (Bearer)</label>
-                            <textarea
-                                className="input-glass w-full h-24 font-mono text-sm"
-                                value={settings.dgi_api_token}
-                                onChange={(e) => setSettings({ ...settings, dgi_api_token: e.target.value })}
-                                placeholder="Insérer le token ici..."
+                        <div>
+                            <label className="label">Point de vente</label>
+                            <input
+                                type="text"
+                                className="input-glass w-full"
+                                value={settings.dgi_point_of_sale}
+                                onChange={(e) => setSettings({ ...settings, dgi_point_of_sale: e.target.value })}
+                                placeholder="POS-01"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="label">Message commercial</label>
+                            <input
+                                type="text"
+                                className="input-glass w-full"
+                                value={settings.dgi_commercial_message}
+                                onChange={(e) => setSettings({ ...settings, dgi_commercial_message: e.target.value })}
+                                placeholder="Merci de votre visite"
                             />
                         </div>
 
                     </div>
 
-                    <div className="pt-4 flex justify-end border-t border-slate-100">
+                    <div className="pt-4 flex justify-between items-center border-t border-slate-100">
+                        <button
+                            type="button"
+                            onClick={handleTestConnection}
+                            disabled={testing || !settings.dgi_login || !settings.dgi_password}
+                            className="btn-secondary flex items-center gap-2 px-6"
+                        >
+                            {testing ? (
+                                <>
+                                    <Loader size={18} className="animate-spin" />
+                                    Test en cours...
+                                </>
+                            ) : (
+                                <>
+                                    <Wifi size={18} />
+                                    Tester la connexion
+                                </>
+                            )}
+                        </button>
+
                         <button type="submit" disabled={saving} className="btn-primary flex items-center gap-2 px-8">
                             <Save size={18} />
                             {saving ? "Sauvegarde..." : "Enregistrer la Configuration"}

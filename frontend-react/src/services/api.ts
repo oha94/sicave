@@ -155,6 +155,7 @@ api.updateSettings = (data: any) => api.post('/settings', { settings: data }).th
 api.uploadLogo = (formData: FormData) => api.post('/settings/logo', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
 }).then(res => res.data);
+api.testDgiConnection = () => api.post('/settings/test-dgi').then(res => res.data);
 
 // Recouvrement
 api.getPayments = (params?: any) => api.get('/payments', { params }).then(res => res.data);
