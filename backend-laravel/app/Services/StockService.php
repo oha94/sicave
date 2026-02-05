@@ -100,4 +100,55 @@ class StockService
             'reference_id' => $referenceId
         ]);
     }
+
+    /**
+     * Validate a stock reception and update stock levels.
+     * 
+     * @param \App\Models\StockReception $reception
+     * @throws \Exception
+     */
+    public function validateReception($reception)
+    {
+        if ($reception->status === 'validated') {
+            throw new \Exception("Cette réception est déjà validée.");
+        }
+
+        DB::transaction(function () use ($reception) {
+            // Load lines with products
+            $reception->load('lines.product', 'warehouse');
+
+            foreach ($reception->lines as $line) {
+                $product = $line->product;
+                $warehouse = $reception->warehouse;
+                $quantity = $line->quantity;
+
+                // Update or create stock entry
+                $pivot = $warehouse->products()->where('product_id', $product->id)->first();
+
+                if ($pivot) {
+                    $warehouse->products()->updateExistingPivot($product->id, [
+                        'stock_actuel' => $pivot->pivot->stock_actuel + $quantity
+                    ]);
+                } else {
+                    $warehouse->products()->attach($product->id, [
+                        'stock_actuel' => $quantity,
+                        'stock_alerte' => 0
+                    ]);
+                }
+
+                // Log stock movement
+                StockMovement::create([
+                    'warehouse_id' => $warehouse->id,
+                    'product_id' => $product->id,
+                    'quantity' => $quantity,
+                    'type' => 'reception',
+                    'reference_type' => get_class($reception),
+                    'reference_id' => $reception->id
+                ]);
+            }
+
+            // Update reception status
+            $reception->update(['status' => 'validated']);
+        });
+    }
 }

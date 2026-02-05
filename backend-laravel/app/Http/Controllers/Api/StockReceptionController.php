@@ -74,12 +74,7 @@ class StockReceptionController extends Controller
     public function validateReception(Request $request, StockReception $reception): JsonResponse
     {
         try {
-            // TODO: Implement validateReception method in StockService
-            // $this->stockService->validateReception($reception);
-
-            // Temporary: Just update status to validated
-            $reception->update(['status' => 'validated']);
-
+            $this->stockService->validateReception($reception);
             return response()->json(['message' => 'Réception validée avec succès.', 'reception' => $reception->refresh()]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
